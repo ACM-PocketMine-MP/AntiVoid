@@ -13,15 +13,18 @@ use pocketmine\world\World;
 class AntiVoid extends PluginBase implements Listener{
 
 	/** @var string[] */
-	private $enabledWorlds = [];
+	private array $enabledWorlds = [];
 
 	/** @var string[] */
-	private $disabledWorlds = [];
+	private array $disabledWorlds = [];
 
 	/** @var bool */
-	private $useDefaultWorld = false;
+	private bool $useDefaultWorld = false;
 
-	public function onEnable() : void{
+	/**
+	 * @return void
+	 */
+	public function onEnable(): void{
 		$this->enabledWorlds = $this->getConfig()->get("enabled-worlds");
 		$this->getLogger()->info("§5Enabled Worlds: " . implode(", ", $this->enabledWorlds));
 		$this->disabledWorlds = $this->getConfig()->get("disabled-worlds");
@@ -33,7 +36,11 @@ class AntiVoid extends PluginBase implements Listener{
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
 
-	public function onDamage(EntityDamageEvent $event) : void{
+	/**
+	 * @param EntityDamageEvent $event
+	 * @return void
+	 */
+	public function onDamage(EntityDamageEvent $event): void{
 		$entity = $event->getEntity();
 		if(!$entity instanceof Player){
 			return;
@@ -48,10 +55,9 @@ class AntiVoid extends PluginBase implements Listener{
 
 	/**
 	 * @param World $world
-	 *
 	 * @return bool
 	 */
-	private function saveFromVoidAllowed(World $world) : bool {
+	private function saveFromVoidAllowed(World $world): bool{
 		if(empty($this->enabledWorlds) and empty($this->disabledWorlds)){
 			return true;
 		}
@@ -72,11 +78,12 @@ class AntiVoid extends PluginBase implements Listener{
 
 	/**
 	 * @param Player $player
+	 * @return void
 	 */
-	private function savePlayerFromVoid(Player $player) : void{
+	private function savePlayerFromVoid(Player $player): void{
 		if($this->useDefaultWorld){
 			$position = $player->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation();
-		} else {
+		}else{
 			$position = $player->getWorld()->getSpawnLocation();
 		}
 		$player->teleport($position);
